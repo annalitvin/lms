@@ -7,7 +7,8 @@ class Command(BaseCommand):
     help = "Added new teachers in database"
 
     def add_arguments(self, parser):
-        parser.add_argument("number_teacher", nargs='+', type=int)
+        parser.add_argument("number_teacher", nargs='+', type=int,
+                            help="Number of teachers to add to the database")
 
     def handle(self, *args, **options):
         number_teachers = options['number_teacher']
