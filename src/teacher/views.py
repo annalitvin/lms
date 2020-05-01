@@ -6,8 +6,10 @@ from .models import Teacher
 
 
 def index(request):
-    return HttpResponse("Generate teachers in database using url: <strong> gen_teacher?teach_number=1 </strong> <br>" +
-                        "where teach_number is number of teachers. <br>Default: 100 teachers", status=200)
+    return HttpResponse("Generate teachers in database using url: <strong>gen_teacher?teach_number=1</strong>" +
+                        "<br>" +
+                        "where <strong>teach_number</strong> is number of teachers. <br>Default: 100 teachers",
+                        status=200)
 
 
 def gen_teacher(request):
@@ -18,7 +20,7 @@ def gen_teacher(request):
     if teacher_number.isdigit():
         try:
             for _ in range(int(teacher_number)):
-                Teacher.generate_teacher(Teacher)
+                Teacher.generate_teacher()
         except Exception as ex:
             return HttpResponse(f'Data added fail! {ex}', status=500)
         return redirect('data_success')

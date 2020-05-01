@@ -18,7 +18,7 @@ class Teacher(models.Model):
     def __str__(self):
         return f'{self.first_name}, {self.last_name}, {self.phone_number}'
 
-    @staticmethod
+    @classmethod
     def generate_teacher(cls):
         faker = Faker(['it_IT', 'en_US', 'uk_UA'])
 
@@ -30,5 +30,3 @@ class Teacher(models.Model):
             user_name=faker.user_name()
         )
         teacher.save()
-
-
