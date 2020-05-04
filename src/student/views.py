@@ -39,7 +39,7 @@ def students_list_one(request):
     if request.GET.get('lname'):
         qs = qs.filter(last_name=request.GET.get('lname'))
     if request.GET.get('mail'):
-        qs = qs.filter(last_name=request.GET.get('mail'))
+        qs = qs.filter(email=request.GET.get('mail'))
 
     result = '<br>'.join(str(student) for student in qs)
     return render(request, 'student/students_list_one.html', {'students_list': result})
@@ -54,6 +54,5 @@ def students_list_two(request):
                    Q(last_name=last_name) |
                    Q(email=email))
 
-    print(qs.query.sql_with_params())
     result = '<br>'.join(str(student) for student in qs)
     return render(request, 'student/students_list_two.html', {'students_list': result})
