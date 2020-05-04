@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -6,10 +6,22 @@ from .models import Teacher
 
 
 def index(request):
-    return HttpResponse("Generate teachers in database using url: <strong>gen_teacher?teach_number=1</strong>" +
-                        "<br>" +
-                        "where <strong>teach_number</strong> is number of teachers. <br>Default: 100 teachers",
-                        status=200)
+    id_teacher = request.GET.get('id')
+
+    if id_teacher is not None:
+        if not id_teacher.isdigit():
+            return HttpResponse("'id' must be numeric and greatest when zero")
+
+        id_teacher = int(id_teacher)
+        try:
+            teacher = Teacher.objects.get(pk=id_teacher)
+        except Teacher.DoesNotExist:
+            return HttpResponse("Generate teachers in database using url: <strong>gen_teacher?teach_number=1</strong>" +
+                                "<br>" +
+                                "where <strong>teach_number</strong> is number of teachers. <br>Default: 100 teachers",
+                                status=200)
+        return render(request, "teacher/index.html", context={"teacher": teacher})
+    return HttpResponse("Введите параметр id: ?id=n")
 
 
 def gen_teacher(request):
@@ -29,3 +41,4 @@ def gen_teacher(request):
 
 def data_success(request):
     return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
+
