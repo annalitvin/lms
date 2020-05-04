@@ -6,13 +6,15 @@ from .models import Group
 
 
 def index(request):
-    id_group = request.GET.get('id')
 
+    id_group = request.GET.get('id')
     if id_group is not None:
         if not id_group.isdigit():
             return HttpResponse("'id' must be numeric and greatest when zero")
 
         id_group = int(id_group)
+        if id_group == 0:
+            return HttpResponse("'id' must be greatest when zero")
         try:
             group = Group.objects.get(pk=id_group)
         except Group.DoesNotExist:
