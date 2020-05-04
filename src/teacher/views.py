@@ -41,4 +41,3 @@ def gen_teacher(request):
 
 def data_success(request):
     return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
-
