@@ -6,13 +6,16 @@ from .models import Teacher
 
 
 def index(request):
-    id_teacher = request.GET.get('id')
 
+    id_teacher = request.GET.get('id')
     if id_teacher is not None:
         if not id_teacher.isdigit():
             return HttpResponse("'id' must be numeric and greatest when zero")
 
         id_teacher = int(id_teacher)
+        if id_teacher == 0:
+            return HttpResponse("'id' must be greatest when zero")
+
         try:
             teacher = Teacher.objects.get(pk=id_teacher)
         except Teacher.DoesNotExist:
