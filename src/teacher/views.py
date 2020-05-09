@@ -1,7 +1,11 @@
-from django.http import HttpResponse, Http404
+from django.db.models import Q
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.urls import reverse
+
+from teacher.forms import TeacherAddForm
 from .models import Teacher
 
 
@@ -44,3 +48,40 @@ def gen_teacher(request):
 
 def data_success(request):
     return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
+
+
+def teachers_list(request):
+    qs = Teacher.objects.all()
+
+    if request.GET.get('fname'):
+        qs = qs.filter(first_name=request.GET.get('fname'))
+    if request.GET.get('lname'):
+        qs = qs.filter(last_name=request.GET.get('lname'))
+    if request.GET.get('mail'):
+        qs = qs.filter(email=request.GET.get('mail'))
+
+    result = '<br>'.join(str(teacher) for teacher in qs)
+    return render(request, 'teacher/teachers_list.html', {'teachers_list': result})
+
+
+def add_teacher(request):
+
+    if request.method == 'POST':
+        form = TeacherAddForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number').strip()
+            email = form.cleaned_data.get('email').strip()
+
+            is_teacher_exists = Teacher.objects.filter(Q(phone_number=phone_number) |
+                                                       Q(email=email)).exists()
+            if is_teacher_exists:
+                form = TeacherAddForm()
+                error_massage = "Teacher not added. Teacher with such phone_number and email is exists! Try again:"
+                return render(request, 'teacher/add_teacher.html', {'form': form, "error_massage": error_massage},
+                              status=400)
+
+            form.save()
+            return HttpResponseRedirect(reverse('teachers_list'))
+    else:
+        form = TeacherAddForm()
+    return render(request, 'teacher/add_teacher.html', {'form': form})
