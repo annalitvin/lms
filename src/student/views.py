@@ -63,12 +63,24 @@ def students_list_two(request):
 
 def students_add(request):
 
+    students_add_template = 'student/students_add.html'
+
     if request.method == 'POST':
         form = StudentAddForm(request.POST)
         if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number').strip()
+            email = form.cleaned_data.get('email').strip()
+
+            is_student_exists = Student.objects.filter(Q(phone_number=phone_number) |
+                                                       Q(email=email)).exists()
+            if is_student_exists:
+                error_massage = "Student not added. Student with such phone_number and email is exists! Try again:"
+                return render(request, students_add_template, {'form': form, "error_massage": error_massage},
+                              status=400)
+
             form.save()
             return HttpResponseRedirect(reverse('students_list_one'))
     else:
         form = StudentAddForm()
 
-    return render(request, 'student/students_add.html', {'form': form})
+    return render(request, students_add_template, {'form': form})
