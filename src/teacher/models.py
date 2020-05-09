@@ -15,7 +15,6 @@ class Teacher(models.Model):
     user_name = models.CharField(max_length=100)
     employment_date = models.DateField(default=datetime.datetime.now().date())
 
-
     def __str__(self):
         return f'{self.first_name}, {self.last_name}, {self.phone_number}'
 
