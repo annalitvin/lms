@@ -13,7 +13,7 @@ class Teacher(models.Model):
     phone_number = models.CharField(max_length=14, null=False)
     email = models.EmailField()
     user_name = models.CharField(max_length=100)
-    employment_date = models.DateField(default=datetime.datetime.now().date())
+    employment_date = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return f'{self.first_name}, {self.last_name}, {self.phone_number}'
