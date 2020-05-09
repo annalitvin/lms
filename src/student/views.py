@@ -1,8 +1,11 @@
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.urls import reverse
+
+from student.forms import StudentAddForm
 from .models import Student
 
 
@@ -56,3 +59,16 @@ def students_list_two(request):
 
     result = '<br>'.join(str(student) for student in qs)
     return render(request, 'student/students_list_two.html', {'students_list': result})
+
+
+def students_add(request):
+
+    if request.method == 'POST':
+        form = StudentAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('students_list_one'))
+    else:
+        form = StudentAddForm()
+
+    return render(request, 'student/students_add.html', {'form': form})
