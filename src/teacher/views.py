@@ -66,6 +66,8 @@ def teachers_list(request):
 
 def add_teacher(request):
 
+    add_teacher_template = 'teacher/add_teacher.html'
+
     if request.method == 'POST':
         form = TeacherAddForm(request.POST)
         if form.is_valid():
@@ -75,13 +77,12 @@ def add_teacher(request):
             is_teacher_exists = Teacher.objects.filter(Q(phone_number=phone_number) |
                                                        Q(email=email)).exists()
             if is_teacher_exists:
-                form = TeacherAddForm()
                 error_massage = "Teacher not added. Teacher with such phone_number and email is exists! Try again:"
-                return render(request, 'teacher/add_teacher.html', {'form': form, "error_massage": error_massage},
+                return render(request, add_teacher_template, {'form': form, "error_massage": error_massage},
                               status=400)
 
             form.save()
             return HttpResponseRedirect(reverse('teachers_list'))
     else:
         form = TeacherAddForm()
-    return render(request, 'teacher/add_teacher.html', {'form': form})
+    return render(request, add_teacher_template, {'form': form})
