@@ -22,7 +22,7 @@ class Group(models.Model):
     number_persons = models.PositiveSmallIntegerField()
     type = models.CharField(max_length=8, null=False, blank=False, choices=TYPE_CHOICES)
     is_paid = models.BooleanField(null=False, blank=False)
-    date_start = models.DateField()
+    date_start = models.DateField(default=datetime.date.today)
 
     def __str__(self):
         return f'{self.name}, {self.specialty}, ' \

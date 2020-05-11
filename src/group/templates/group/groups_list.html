@@ -1,0 +1,18 @@
+{% extends 'group/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <form name="form">
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" name="name"><br>
+      <label for="specialty">Specialty:</label><br>
+      <input type="text" id="specialty" name="specialty"><br>
+        <label for="course_name">Course name:</label><br>
+      <input type="text" id="course_name" name="course_name">
+      <button type="submit">Search</button>
+    </form>
+
+    {{ groups_list|safe }}
+
+{% endblock %}

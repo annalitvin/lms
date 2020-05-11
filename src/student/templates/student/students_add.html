@@ -1,0 +1,14 @@
+{% extends 'student/base.html' %}
+{% load static %}
+
+{% block content %}
+    <p style="color: red">{{error_massage}}</p>
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Create</button>
+    </form>
+
+{% endblock %}
