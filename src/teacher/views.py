@@ -35,7 +35,7 @@ def gen_teacher(request):
 
     TEACHER_NUMBER = 100
 
-    teacher_number = request.GET.get('teach_number', TEACHER_NUMBER)
+    teacher_number = str(request.GET.get('teach_number', TEACHER_NUMBER))
     if teacher_number.isdigit():
         try:
             for _ in range(int(teacher_number)):
