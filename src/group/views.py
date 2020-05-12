@@ -1,11 +1,11 @@
 from django.db.models import Q
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
 
-from group.forms import GroupAddForm
+from group.forms import GroupAddForm, GroupEditForm
 from .models import Group
 
 
@@ -46,8 +46,8 @@ def groups_list(request):
 
     qs = qs.filter(groups_filter)
 
-    result = '<br>'.join(str(group) for group in qs)
-    return render(request, 'group/groups_list.html', {'groups_list': result})
+    return render(request, 'group/groups_list.html',
+                  {'groups_list': qs, 'title': 'Group list'})
 
 
 def add_group(request):
@@ -79,3 +79,28 @@ def add_group(request):
     else:
         form = GroupAddForm()
     return render(request, add_group_template, {'form': form})
+
+
+def edit_group(request, id):
+
+    group_edit_template = 'group/group_edit.html'
+    try:
+        group = Group.objects.get(id=id)
+    except Group.DoesNotExist:
+        return HttpResponseNotFound(f"Group with id={id} doesn't exist")
+
+    if request.method == 'POST':
+        form = GroupEditForm(request.POST or None, instance=group)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('groups_list'))
+    else:
+        form = GroupEditForm(instance=group)
+    return render(request, group_edit_template, {'form': form, 'title': 'Edit student'})
+
+
+def delete_group(request, id):
+
+    group = get_object_or_404(Group, id=id)
+    group.delete()
+    return HttpResponseRedirect(reverse('groups_list'))

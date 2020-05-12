@@ -13,6 +13,17 @@
       <button type="submit">Search</button>
     </form>
 
-    {{ groups_list|safe }}
+{% for group in groups_list %}
+    {{ group.id }}
+    {{ group.name }}
+    {{ group.specialty }}
+    {{ group.course_name }}
+    {{ group.number_persons }}
+    {{ group.type }}
+    {{ group.date_start }}
+    <a href="{% url 'edit_group' group.id %}">edit |</a>
+    <a href="{% url 'delete_group' group.id %}">delete</a>
+    <br>
+{% endfor %}
 
 {% endblock %}

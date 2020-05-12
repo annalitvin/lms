@@ -5,6 +5,7 @@ import string
 from django.db import models
 
 # Create your models here.
+from teacher.models import Teacher
 
 
 class Group(models.Model):
@@ -23,6 +24,7 @@ class Group(models.Model):
     type = models.CharField(max_length=8, null=False, blank=False, choices=TYPE_CHOICES)
     is_paid = models.BooleanField(null=False, blank=False)
     date_start = models.DateField(default=datetime.date.today)
+    teacher = models.ForeignKey(to=Teacher, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.name}, {self.specialty}, ' \
