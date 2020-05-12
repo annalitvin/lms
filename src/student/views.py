@@ -53,9 +53,10 @@ def students_list_two(request):
 
     first_name, last_name, email = request.GET.get("fname"), request.GET.get("lname"), request.GET.get("mail")
 
-    qs = qs.filter(Q(first_name=first_name) |
-                   Q(last_name=last_name) |
-                   Q(email=email))
+    if first_name or last_name or email:
+        qs = qs.filter(Q(first_name=first_name) |
+                       Q(last_name=last_name) |
+                       Q(email=email))
 
     result = '<br>'.join(str(student) for student in qs)
     return render(request, 'student/students_list_two.html',
