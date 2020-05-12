@@ -42,7 +42,7 @@ def gen_teacher(request):
                 Teacher.generate_teacher()
         except Exception as ex:
             return HttpResponse(f'Data added fail! {ex}', status=500)
-        return redirect('data_success')
+        return redirect('teacher:data_success')
     return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
 
 
@@ -81,7 +81,7 @@ def add_teacher(request):
                               status=400)
 
             form.save()
-            return HttpResponseRedirect(reverse('teachers_list'))
+            return HttpResponseRedirect(reverse('teacher:list'))
     else:
         form = TeacherAddForm()
     return render(request, add_teacher_template, {'form': form})
@@ -99,7 +99,7 @@ def edit_teacher(request, id):
         form = TeacherEditForm(request.POST or None, instance=teacher)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('teachers_list'))
+            return HttpResponseRedirect(reverse('teacher:list'))
     else:
         form = TeacherEditForm(instance=teacher)
     return render(request, teachers_edit_template,
@@ -110,4 +110,4 @@ def delete_teacher(request, id):
 
     teacher = get_object_or_404(Teacher, id=id)
     teacher.delete()
-    return HttpResponseRedirect(reverse('teachers_list'))
+    return HttpResponseRedirect(reverse('teacher:list'))

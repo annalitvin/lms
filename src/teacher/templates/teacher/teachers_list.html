@@ -17,8 +17,8 @@
         {{ teacher.first_name }}
         {{ teacher.last_name }}
         {{ teacher.email }}
-        <a href="{% url 'edit_teacher' teacher.id %}">edit |</a>
-        <a href="{% url 'delete_teacher' teacher.id %}">delete</a>
+        <a href="{% url 'teacher:edit' teacher.id %}">edit |</a>
+        <a href="{% url 'teacher:delete' teacher.id %}">delete</a>
         <br>
     {% endfor %}
 
