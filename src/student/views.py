@@ -19,7 +19,7 @@ def gen_student(request):
 
     STUDENT_NUMBER = 100
 
-    student_number = request.GET.get('student_number', STUDENT_NUMBER)
+    student_number = str(request.GET.get('student_number', STUDENT_NUMBER))
     if student_number.isdigit():
         try:
             for _ in range(int(student_number)):
