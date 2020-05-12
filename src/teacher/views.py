@@ -23,7 +23,7 @@ def index(request):
         try:
             teacher = Teacher.objects.get(pk=id_teacher)
         except Teacher.DoesNotExist:
-            return HttpResponse("Generate teachers in database using url: <strong>gen_teacher?teach_number=1</strong>" +
+            return HttpResponse("Generate teachers in database using url: <strong>generate?teach_number=1</strong>" +
                                 "<br>" +
                                 "where <strong>teach_number</strong> is number of teachers. <br>Default: 100 teachers",
                                 status=200)
