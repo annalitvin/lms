@@ -1,11 +1,11 @@
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
 
-from student.forms import StudentAddForm
+from student.forms import StudentAddForm, StudentEditForm
 from .models import Student
 
 
@@ -44,8 +44,8 @@ def students_list_one(request):
     if request.GET.get('mail'):
         qs = qs.filter(email=request.GET.get('mail'))
 
-    result = '<br>'.join(str(student) for student in qs)
-    return render(request, 'student/students_list_one.html', {'students_list': result})
+    return render(request, 'student/students_list_one.html',
+                  {'students_list': qs, 'title': 'Student list 1'})
 
 
 def students_list_two(request):
@@ -58,7 +58,8 @@ def students_list_two(request):
                    Q(email=email))
 
     result = '<br>'.join(str(student) for student in qs)
-    return render(request, 'student/students_list_two.html', {'students_list': result})
+    return render(request, 'student/students_list_two.html',
+                  {'students_list': result, 'title': 'Student list 2'})
 
 
 def students_add(request):
@@ -77,10 +78,37 @@ def students_add(request):
                 error_massage = "Student not added. Student with such phone_number and email is exists! Try again:"
                 return render(request, students_add_template, {'form': form, "error_massage": error_massage},
                               status=400)
-
             form.save()
             return HttpResponseRedirect(reverse('students_list_one'))
     else:
         form = StudentAddForm()
 
-    return render(request, students_add_template, {'form': form})
+    return render(request, students_add_template,
+                  {'form': form, 'title': 'Add student'})
+
+
+def student_edit(request, id):
+
+    students_edit_template = 'student/students_edit.html'
+    try:
+        student = Student.objects.get(id=id)
+    except Student.DoesNotExist:
+        return HttpResponseNotFound(f"Student with id={id} doesn't exist")
+
+    if request.method == 'POST':
+        form = StudentEditForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('students_list_one'))
+    else:
+        form = StudentEditForm(instance=student)
+
+    return render(request, students_edit_template,
+                  {'form': form, 'title': 'Edit student'})
+
+
+def student_delete(request, id):
+
+    student = get_object_or_404(Student, id=id)
+    student.delete()
+    return HttpResponseRedirect(reverse('students_list_one'))

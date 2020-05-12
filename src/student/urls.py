@@ -8,5 +8,7 @@ urlpatterns = [
     path('data_success', views.data_success, name='data_success'),
     path('students_list/1', views.students_list_one, name='students_list_one'),
     path('students_list/2', views.students_list_two, name='students_list_two'),
-    path('add_student/', views.students_add, name='add_student')
+    path('add_student/', views.students_add, name='add_student'),
+    path('edit_student/<int:id>', views.student_edit, name='edit_student'),
+    path('delete_student/<int:id>', views.student_delete, name='delete_student')
 ]
