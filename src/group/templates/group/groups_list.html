@@ -21,8 +21,8 @@
     {{ group.number_persons }}
     {{ group.type }}
     {{ group.date_start }}
-    <a href="{% url 'edit_group' group.id %}">edit |</a>
-    <a href="{% url 'delete_group' group.id %}">delete</a>
+    <a href="{% url 'group:edit' group.id %}">edit |</a>
+    <a href="{% url 'group:delete' group.id %}">delete</a>
     <br>
 {% endfor %}
 

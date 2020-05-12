@@ -74,7 +74,7 @@ def add_group(request):
                 return render(request, add_group_template, {'form': form, "error_message": error_message},
                               status=400)
             form.save()
-            return HttpResponseRedirect(reverse('groups_list'))
+            return HttpResponseRedirect(reverse('group:groups_list'))
 
     else:
         form = GroupAddForm()
@@ -93,7 +93,7 @@ def edit_group(request, id):
         form = GroupEditForm(request.POST or None, instance=group)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('groups_list'))
+            return HttpResponseRedirect(reverse('group:groups_list'))
     else:
         form = GroupEditForm(instance=group)
     return render(request, group_edit_template, {'form': form, 'title': 'Edit student'})
@@ -103,4 +103,4 @@ def delete_group(request, id):
 
     group = get_object_or_404(Group, id=id)
     group.delete()
-    return HttpResponseRedirect(reverse('groups_list'))
+    return HttpResponseRedirect(reverse('group:groups_list'))
