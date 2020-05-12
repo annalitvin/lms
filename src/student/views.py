@@ -10,7 +10,7 @@ from .models import Student
 
 
 def index(request):
-    return HttpResponse("Generate students in database using url: <strong> gen_student?student_number=1 </strong> <br>"
+    return HttpResponse("Generate students in database using url: <strong> generate?student_number=1 </strong> <br>"
                         + "where <strong>student_number</strong> is number of students. <br>Default: 100 students",
                         status=200)
 
