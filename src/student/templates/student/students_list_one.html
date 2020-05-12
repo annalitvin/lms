@@ -16,9 +16,9 @@
 
 {% for student in students_list %}
     {{student.id}}
-    <a href="{% url 'edit_student' student.id %}">{{student.first_name}} {{student.last_name}}</a>
+    <a href="{% url 'student:edit' student.id %}">{{student.first_name}} {{student.last_name}}</a>
     {{student.email}}
-    <a href="{% url 'delete_student' student.id %}">delete</a>
+    <a href="{% url 'student:delete' student.id %}">delete</a>
     <br>
 {% empty %}
     <p>Sorry, list is empty</p>

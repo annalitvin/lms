@@ -26,7 +26,7 @@ def gen_student(request):
                 Student.generate_student()
         except Exception as ex:
             return HttpResponse(f'Data added fail! {ex}', status=500)
-        return redirect('data_success')
+        return redirect('student:data_success')
     return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
 
 
@@ -79,7 +79,7 @@ def students_add(request):
                 return render(request, students_add_template, {'form': form, "error_massage": error_massage},
                               status=400)
             form.save()
-            return HttpResponseRedirect(reverse('students_list_one'))
+            return HttpResponseRedirect(reverse('student:list_one'))
     else:
         form = StudentAddForm()
 
@@ -99,7 +99,7 @@ def student_edit(request, id):
         form = StudentEditForm(request.POST, instance=student)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('students_list_one'))
+            return HttpResponseRedirect(reverse('student:list_one'))
     else:
         form = StudentEditForm(instance=student)
 
@@ -111,4 +111,4 @@ def student_delete(request, id):
 
     student = get_object_or_404(Student, id=id)
     student.delete()
-    return HttpResponseRedirect(reverse('students_list_one'))
+    return HttpResponseRedirect(reverse('student:list_one'))
