@@ -12,7 +12,15 @@
       <button type="submit">Search</button>
     </form>
 
-    {{ teachers_list|safe }}
+    {% for teacher in teachers_list %}
+        {{ teacher.id }}
+        {{ teacher.first_name }}
+        {{ teacher.last_name }}
+        {{ teacher.email }}
+        <a href="{% url 'edit_teacher' teacher.id %}">edit |</a>
+        <a href="{% url 'delete_teacher' teacher.id %}">delete</a>
+        <br>
+    {% endfor %}
 
 {% endblock %}
 

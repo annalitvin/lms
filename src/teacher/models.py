@@ -10,7 +10,7 @@ from faker import Faker
 class Teacher(models.Model):
     first_name = models.CharField(max_length=40, null=False)
     last_name = models.CharField(max_length=20, null=False)
-    phone_number = models.CharField(max_length=14, null=False)
+    phone_number = models.CharField(max_length=30, null=False)
     email = models.EmailField()
     user_name = models.CharField(max_length=100)
     employment_date = models.DateField(default=datetime.date.today)

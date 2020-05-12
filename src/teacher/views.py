@@ -1,11 +1,11 @@
 from django.db.models import Q
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse
 
-from teacher.forms import TeacherAddForm
+from teacher.forms import TeacherAddForm, TeacherEditForm
 from .models import Teacher
 
 
@@ -60,8 +60,7 @@ def teachers_list(request):
     if request.GET.get('mail'):
         qs = qs.filter(email=request.GET.get('mail'))
 
-    result = '<br>'.join(str(teacher) for teacher in qs)
-    return render(request, 'teacher/teachers_list.html', {'teachers_list': result})
+    return render(request, 'teacher/teachers_list.html', {'teachers_list': qs})
 
 
 def add_teacher(request):
@@ -86,3 +85,29 @@ def add_teacher(request):
     else:
         form = TeacherAddForm()
     return render(request, add_teacher_template, {'form': form})
+
+
+def edit_teacher(request, id):
+
+    teachers_edit_template = 'teacher/edit_teacher.html'
+    try:
+        teacher = Teacher.objects.get(id=id)
+    except Teacher.DoesNotExist:
+        return HttpResponseNotFound(f"Teacher with id={id} doesn't exist")
+
+    if request.method == 'POST':
+        form = TeacherEditForm(request.POST or None, instance=teacher)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('teachers_list'))
+    else:
+        form = TeacherEditForm(instance=teacher)
+    return render(request, teachers_edit_template,
+                  {'form': form, 'title': 'Edit teacher'})
+
+
+def delete_teacher(request, id):
+
+    teacher = get_object_or_404(Teacher, id=id)
+    teacher.delete()
+    return HttpResponseRedirect(reverse('teachers_list'))
