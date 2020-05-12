@@ -21,8 +21,8 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', views.main, name='main'),
-    path('teacher/', include('teacher.urls'), name='teacher'),
-    path('student/', include('student.urls'), name='student'),
-    path('group/', include('group.urls'), name='group')
+    path('teacher/', include(('teacher.urls', 'teacher'), namespace='teacher'), name='teacher'),
+    path('student/', include(('student.urls', 'student'), namespace='student'), name='student'),
+    path('group/', include(('group.urls', 'group'), namespace='group'), name='group')
 
 ]
