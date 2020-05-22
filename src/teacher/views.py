@@ -103,7 +103,7 @@ def edit_teacher(request, id):
     else:
         form = TeacherEditForm(instance=teacher)
     return render(request, teachers_edit_template,
-                  {'form': form, 'title': 'Edit teacher'})
+                  {'form': form, 'title': 'Edit teacher', 'teacher': teacher})
 
 
 def delete_teacher(request, id):
