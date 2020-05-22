@@ -8,6 +8,23 @@ from django.db import models
 from teacher.models import Teacher
 
 
+class Classroom(models.Model):
+    name = models.CharField(max_length=64)
+    floor = models.SmallIntegerField(null=True)
+
+    def __str__(self):
+        return f'{self.name} - Floor# {self.floor}'
+
+    @classmethod
+    def generate_classroom(cls):
+
+        classroom = cls(
+            name=f'Classroom-{random.choice(range(5))}',
+            floor=random.choice(range(5))
+        )
+        classroom.save()
+
+
 class Group(models.Model):
 
     ONLINE = 'online'
@@ -25,6 +42,7 @@ class Group(models.Model):
     is_paid = models.BooleanField(null=False, blank=False)
     date_start = models.DateField(default=datetime.date.today)
     teacher = models.ForeignKey(to=Teacher, null=True, on_delete=models.SET_NULL)
+    classroom = models.ManyToManyField(to=Classroom, related_name='group')
 
     def __str__(self):
         return f'{self.name}, {self.specialty}, ' \
@@ -33,7 +51,11 @@ class Group(models.Model):
             f'{self.type}, {self.date_start}'
 
     @classmethod
-    def generate_group(cls):
+    def generate_group(cls, teachers=None):
+
+        if teachers is None:
+            teachers = list(Teacher.objects.all())
+
         courses_name = None
 
         specialty = random.choice(["Python", "SQL", "PHP"])
@@ -60,6 +82,7 @@ class Group(models.Model):
             number_persons=random.randrange(1, 15),
             type=random.choice(["online", "offline"]),
             is_paid=random.choice([True, False]),
-            date_start=datetime.datetime(year, month, day)
+            date_start=datetime.datetime(year, month, day),
+            teacher=random.choice(teachers)
         )
         group.save()
