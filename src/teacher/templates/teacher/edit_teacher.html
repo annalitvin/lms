@@ -9,4 +9,6 @@
 
         <button type="submit">Save</button>
     </form>
+
+    {% include 'group/includes/group_table.html' with groups_list=teacher.group_set.all%}
 {% endblock %}
