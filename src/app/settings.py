@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'student',
     'teacher',
     'group',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
