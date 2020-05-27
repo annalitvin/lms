@@ -7,6 +7,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, TemplateView
 
 from student.forms import StudentAddForm, StudentEditForm
+from student.mixins import StudentValidFormMixin
 from .models import Student
 
 
@@ -95,23 +96,7 @@ class StudentsListViewTwo(ListView):
         return context
 
 
-class StudentCreateUpdateResponseMixin:
-
-    def form_valid(self, form):
-        phone_number = form.cleaned_data.get('phone_number').strip()
-        email = form.cleaned_data.get('email').strip()
-
-        is_student_exists = self.model.objects.filter(Q(phone_number=phone_number) |
-                                                      Q(email=email)).exists()
-        if is_student_exists:
-            error_massage = "Student not added. Student with such phone_number and email is exists! Try again:"
-            return self.render_to_response(self.get_context_data(form=form, error_massage=error_massage, status=400))
-
-        response = super().form_valid(form)
-        return response
-
-
-class StudentUpdateView(StudentCreateUpdateResponseMixin, UpdateView):
+class StudentUpdateView(UpdateView):
     model = Student
     template_name = 'student/students_edit.html'
     form_class = StudentEditForm
@@ -125,7 +110,7 @@ class StudentUpdateView(StudentCreateUpdateResponseMixin, UpdateView):
         return context
 
 
-class StudentCreateView(StudentCreateUpdateResponseMixin, CreateView):
+class StudentCreateView(StudentValidFormMixin, CreateView):
     model = Student
     template_name = 'student/students_add.html'
     form_class = StudentAddForm
@@ -145,4 +130,3 @@ class StudentDeleteView(DeleteView):
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
-

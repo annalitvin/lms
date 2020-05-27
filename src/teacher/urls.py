@@ -5,11 +5,11 @@ from . import views
 app_name = 'teacher'
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('generate', views.gen_teacher, name='generate'),
-    path('data_success', views.data_success, name='data_success'),
-    path('list', views.teachers_list, name='list'),
-    path('add', views.add_teacher, name='add'),
-    path('edit/<int:id>', views.edit_teacher, name='edit'),
-    path('delete/<int:id>', views.delete_teacher, name='delete')
+    path('', views.IndexTeacherDetailView.as_view(), name='index'),
+    path('generate', views.GenerateTeacherView.as_view(), name='generate'),
+    path('data_success', views.DataSuccessView.as_view(), name='data_success'),
+    path('list', views.TeachersListView.as_view(), name='list'),
+    path('add', views.TeacherCreateView.as_view(), name='add'),
+    path('edit/<int:pk>', views.TeacherUpdateView.as_view(), name='edit'),
+    path('delete/<int:pk>', views.TeacherDeleteView.as_view(), name='delete')
 ]

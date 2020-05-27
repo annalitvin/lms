@@ -5,10 +5,10 @@ from . import views
 app_name = 'group'
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('add', views.add_group, name='add'),
-    path('groups_list', views.groups_list, name='groups_list'),
-    path('edit/<int:id>', views.edit_group, name='edit'),
-    path('delete/<int:id>', views.delete_group, name='delete'),
+    path('', views.IndexGroupDetailView.as_view(), name='index'),
+    path('add', views.GroupCreateView.as_view(), name='add'),
+    path('groups_list', views.GroupListView.as_view(), name='groups_list'),
+    path('edit/<int:pk>', views.GroupUpdateView.as_view(), name='edit'),
+    path('delete/<int:pk>', views.GroupDeleteView.as_view(), name='delete'),
 
 ]
