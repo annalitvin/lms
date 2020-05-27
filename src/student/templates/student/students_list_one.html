@@ -13,15 +13,6 @@
     </form>
 
 <!--    {{ students_list|safe }}-->
-
-{% for student in students_list %}
-    {{student.id}}
-    <a href="{% url 'student:edit' student.id %}">{{student.first_name}} {{student.last_name}}</a>
-    {{student.email}}
-    <a href="{% url 'student:delete' student.id %}">delete</a>
-    <br>
-{% empty %}
-    <p>Sorry, list is empty</p>
-{% endfor %}
+    {% include 'student/includes/students_table.html' %}
 
 {% endblock %}

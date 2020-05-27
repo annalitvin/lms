@@ -35,7 +35,7 @@ def data_success(request):
 
 
 def students_list_one(request):
-    qs = Student.objects.all()
+    qs = Student.objects.all().select_related('group')
 
     if request.GET.get('fname'):
         qs = qs.filter(first_name=request.GET.get('fname'))
@@ -56,7 +56,7 @@ def students_list_two(request):
     if first_name or last_name or email:
         qs = qs.filter(Q(first_name=first_name) |
                        Q(last_name=last_name) |
-                       Q(email=email))
+                       Q(email=email)).select_related('group')
 
     result = '<br>'.join(str(student) for student in qs)
     return render(request, 'student/students_list_two.html',

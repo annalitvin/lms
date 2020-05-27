@@ -96,7 +96,7 @@ def edit_group(request, id):
             return HttpResponseRedirect(reverse('group:groups_list'))
     else:
         form = GroupEditForm(instance=group)
-    return render(request, group_edit_template, {'form': form, 'title': 'Edit student'})
+    return render(request, group_edit_template, {'form': form, 'title': 'Edit student', 'group': group})
 
 
 def delete_group(request, id):

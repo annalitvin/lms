@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand, CommandError
 
+from group.models import Group
 from student.models import Student
 
 
@@ -14,8 +15,10 @@ class Command(BaseCommand):
         number_students = options['number_student']
 
         try:
+            Student.objects.all().delete()
+            groups = list(Group.objects.all())
             for _ in range(number_students):
-                Student.generate_student()
+                Student.generate_student(groups)
         except Exception as ex:
             raise CommandError(f'Data added fail! {ex}')
         self.stdout.write(self.style.SUCCESS(f'Data added successfully! {number_students}'))

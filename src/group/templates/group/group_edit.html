@@ -9,4 +9,6 @@
 
         <button type="submit">Save</button>
     </form>
+
+    {% include 'student/includes/students_table.html' with students_list=group.students.all %}
 {% endblock %}

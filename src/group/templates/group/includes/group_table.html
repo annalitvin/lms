@@ -1,0 +1,33 @@
+
+<h3>Groups</h3>
+
+{% if groups_list %}
+    <table border="1px">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Specialty</th>
+          <th>Course name</th>
+          <th>Number persons</th>
+          <th>Type</th>
+          <th>Date start</th>
+            <th>&#9998;</th>
+            <th>🗑</th>
+        </tr>
+        {% for group in groups_list  %}
+            <tr>
+              <td>{{ group.id }}</td>
+              <td>{{ group.name }}</td>
+              <td>{{ group.specialty }}</td>
+              <td>{{ group.course_name }}</td>
+              <td>{{ group.number_persons }}</td>
+              <td>{{ group.type }}</td>
+              <td>{{ group.date_start }}</td>
+              <td> <a href="{% url 'group:edit' group.id %}">EDIT</a></td>
+              <td> <a href="{% url 'group:delete' group.id %}">DEL</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Sorry, list is empty</p>
+{% endif %}
