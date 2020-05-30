@@ -7,7 +7,6 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, TemplateView
 
 from student.forms import StudentAddForm, StudentEditForm
-from student.mixins import StudentValidFormMixin
 from .models import Student
 
 
@@ -110,7 +109,7 @@ class StudentUpdateView(UpdateView):
         return context
 
 
-class StudentCreateView(StudentValidFormMixin, CreateView):
+class StudentCreateView(CreateView):
     model = Student
     template_name = 'student/students_add.html'
     form_class = StudentAddForm

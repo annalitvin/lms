@@ -1,13 +1,15 @@
 {% extends 'student/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-    <p style="color: red">{{error_massage}}</p>
+
     <form method="post">
-        {% csrf_token %}
+        <div class="form-group">
+            {% csrf_token %}
 
-        {{ form.as_p }}
-
+            {{ form|crispy }}
+        </div>
         <button type="submit">Save</button>
     </form>
 
