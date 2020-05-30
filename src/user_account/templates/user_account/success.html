@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="alert alert-success" role="alert">
+      <h4 class="alert-heading">Well done!</h4>
+      <p>Aww yeah, you successfully </p>
+      <hr>
+      <p class="mb-0">Go back to main page.</p>
+        <br>
+        <p><a href="{% url 'index' %}" class="btn btn-light">Back</a></p>
+    </div>
+
+{% endblock %}
