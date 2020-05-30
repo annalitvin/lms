@@ -9,8 +9,9 @@
 
         {{ form|crispy }}
 
-        <button type="submit">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
-
+    <br>
+     <br>
     {% include 'student/includes/students_table.html' with students_list=group.students.all %}
 {% endblock %}
