@@ -6,10 +6,11 @@
 {% block content %}
 
     <form method="post">
-        {% csrf_token %}
+        <div class="form-group">
+            {% csrf_token %}
 
-        {{ form|crispy }}
-
+            {{ form|crispy }}
+        </div>
         <button type="submit">Create</button>
     </form>
 {% endblock %}

@@ -5,11 +5,13 @@
 {% block content %}
 
     <form method="post">
-        {% csrf_token %}
+        <div class="form-group">
+            {% csrf_token %}
 
-        {{ form|crispy }}
+            {{ form|crispy }}
 
-        <button type="submit">Save</button>
+            <button type="submit">Save</button>
+        </div>
     </form>
 
     {% include 'group/includes/group_table.html' with groups_list=teacher.group_set.all%}
