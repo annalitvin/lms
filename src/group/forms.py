@@ -32,6 +32,7 @@ class GroupAddForm(GroupBaseForm):
         else:
             error_message = "Such specialty does not exist"
             self.add_error('specialty', error_message)
+        return self.cleaned_data
 
 
 class GroupEditForm(GroupBaseForm):

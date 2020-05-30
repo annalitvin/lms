@@ -26,12 +26,16 @@ class IndexGroupDetailView(DetailView):
     def get(self, request, *args, **kwargs):
 
         id_group = self.kwargs.get(self.pk_url_kwarg)
-
         if id_group is not None:
             if id_group == 0:
                 return HttpResponse("'id' must be greatest when zero")
 
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context['title'] = 'Group'
+        return context
 
 
 class GroupListView(ListView):
@@ -89,6 +93,11 @@ class GroupCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('group:groups_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add group'
+        return context
 
 
 class GroupDeleteView(DeleteView):
