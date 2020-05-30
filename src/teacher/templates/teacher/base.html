@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Teacher</title>
-</head>
-<body>
-    {% block content %}
-    {% endblock %}
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+    <h1>Teacher</h1>
+
+{% endblock %}

@@ -1,13 +1,10 @@
-from django.db.models import Q
 from django.http import HttpResponse, Http404
-from django.shortcuts import render, redirect
-
+from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView, DetailView
 
 from teacher.forms import TeacherAddForm, TeacherEditForm
-from teacher.mixins import TeacherValidFormMixin
 from .models import Teacher
 
 
@@ -18,9 +15,8 @@ class IndexTeacherDetailView(DetailView):
 
     def get_object(self, queryset=None):
 
-        request = self.request
-
-        id_teacher = request.GET.get('id')
+        id_teacher = self.kwargs.get(self.pk_url_kwarg)
+        print(id_teacher, "erwr")
         try:
             group_obj = self.model.objects.get(pk=id_teacher)
         except self.model.DoesNotExist:
@@ -31,21 +27,13 @@ class IndexTeacherDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
 
-        id_teacher = request.GET.get('id')
-        if id_teacher is None:
-            return HttpResponse("Введите параметр id: ?id=n")
+        id_teacher = self.kwargs.get(self.pk_url_kwarg)
 
         if id_teacher is not None:
-            if not id_teacher.isdigit():
-                return HttpResponse("'id' must be numeric and greatest when zero")
-
-            id_teacher = int(id_teacher)
             if id_teacher == 0:
                 return HttpResponse("'id' must be greatest when zero")
 
-        self.object = self.get_object()
-        context = self.get_context_data()
-        return self.render_to_response(context)
+        return super().get(request, *args, **kwargs)
 
 
 class GenerateTeacherView(TemplateView):
@@ -110,7 +98,7 @@ class TeacherUpdateView(UpdateView):
         return context
 
 
-class TeacherCreateView(TeacherValidFormMixin, CreateView):
+class TeacherCreateView(CreateView):
     model = Teacher
     template_name = 'teacher/add_teacher.html'
     form_class = TeacherAddForm
