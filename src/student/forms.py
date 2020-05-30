@@ -29,7 +29,7 @@ class StudentAddForm(StudentBaseForm):
 class StudentEditForm(StudentBaseForm):
 
     def __init__(self, *args, **kwargs):
-        self.pk = kwargs.pop('instance', None)
+        self.pk = kwargs.get('instance', None).pk
         super().__init__(*args, **kwargs)
 
     def clean_email(self):
