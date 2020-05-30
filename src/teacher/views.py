@@ -81,6 +81,11 @@ class TeachersListView(ListView):
 
         return qs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Teacher list'
+        return context
+
 
 class TeacherUpdateView(UpdateView):
     model = Teacher
@@ -105,6 +110,11 @@ class TeacherCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('teacher:list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add teacher'
+        return context
 
 
 class TeacherDeleteView(DeleteView):
