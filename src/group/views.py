@@ -6,7 +6,6 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, DetailView
 
 from group.forms import GroupAddForm, GroupEditForm
-from group.mixins import GroupValidFormMixin
 from .models import Group
 
 
@@ -17,9 +16,7 @@ class IndexGroupDetailView(DetailView):
 
     def get_object(self, queryset=None):
 
-        request = self.request
-
-        id_group = request.GET.get('id')
+        id_group = self.kwargs.get(self.pk_url_kwarg)
         try:
             group_obj = self.model.objects.get(pk=id_group)
         except self.model.DoesNotExist:
@@ -28,22 +25,13 @@ class IndexGroupDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
 
-        id_group = request.GET.get('id')
-        if id_group is None:
-            return HttpResponse("Введите параметр id: ?id=n")
+        id_group = self.kwargs.get(self.pk_url_kwarg)
 
         if id_group is not None:
-
-            if not id_group.isdigit():
-                return HttpResponse("'id' must be numeric and greatest when zero")
-
-            id_group = int(id_group)
             if id_group == 0:
                 return HttpResponse("'id' must be greatest when zero")
 
-        self.object = self.get_object()
-        context = self.get_context_data()
-        return self.render_to_response(context)
+        return super().get(request, *args, **kwargs)
 
 
 class GroupListView(ListView):
@@ -94,7 +82,7 @@ class GroupUpdateView(UpdateView):
         return context
 
 
-class GroupCreateView(GroupValidFormMixin, CreateView):
+class GroupCreateView(CreateView):
     model = Group
     template_name = 'group/add_group.html'
     form_class = GroupAddForm
