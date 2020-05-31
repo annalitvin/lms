@@ -3,14 +3,26 @@
 
 {% block content %}
 
-    <form name="form">
-      <label for="name">Name:</label><br>
-      <input type="text" id="name" name="name"><br>
-      <label for="specialty">Specialty:</label><br>
-      <input type="text" id="specialty" name="specialty"><br>
-        <label for="course_name">Course name:</label><br>
-      <input type="text" id="course_name" name="course_name">
-      <button type="submit">Search</button>
+
+    <form>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Name</span>
+            </div>
+            <input name="name" type="text" class="form-control" placeholder="Name" aria-label="name" aria-describedby="basic-addon1">
+
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">Specialty</span>
+            </div>
+            <input name="specialty" type="text" class="form-control" placeholder="Specialty" aria-label="specialty" aria-describedby="basic-addon1">
+
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Course name</span>
+            </div>
+            <input name="course_name" type="text" class="form-control" placeholder="Course name" aria-label="coursename" aria-describedby="basic-addon1">
+
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
     </form>
 
     {% include 'group/includes/group_table.html' %}

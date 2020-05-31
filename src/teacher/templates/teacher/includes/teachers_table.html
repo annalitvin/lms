@@ -1,0 +1,28 @@
+<h3>Teachers <a href="{% url 'teacher:add' %}" class="btn btn-info">ADD</a></h3>
+
+{% if teachers_list %}
+<table class="table table-hover">
+    <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>Email</th>
+          <th>&#9998;</th>
+          <th>🗑</th>
+        </tr>
+    </thead>
+    {% for teacher in teachers_list %}
+        <tr>
+          <td> {{ teacher.id }}</td>
+          <td> {{ teacher.first_name }}</td>
+          <td> {{ teacher.last_name }}</td>
+          <td> {{ teacher.email }}</td>
+          <td> <a href="{% url 'teacher:edit' teacher.id %}" class="btn btn-primary">EDIT</a></td>
+          <td> <a href="{% url 'teacher:delete' teacher.id %}" class="btn btn-danger">DEL</a></td>
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Sorry, list is empty</p>
+{% endif %}

@@ -2,14 +2,26 @@
 {% load static %}
 
 {% block content %}
-    <form name="form">
-      <label for="fname">First name:</label><br>
-      <input type="text" id="fname" name="fname"><br>
-      <label for="lname">Last name:</label><br>
-      <input type="text" id="lname" name="lname"><br>
-        <label for="mail">Mail:</label><br>
-      <input type="text" id="mail" name="mail">
-      <button type="submit">Search</button>
+
+    <form>
+        <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">First name</span>
+        </div>
+        <input name="fname" type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
+
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon2">Last name</span>
+        </div>
+        <input name="lname" type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
+
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Email</span>
+        </div>
+        <input name="mail" type="text" class="form-control" placeholder="Email" aria-label="email" aria-describedby="basic-addon1">
+
+        <button type="submit" class="btn btn-success">Search</button>
+    </div>
     </form>
 
 <!--    {{ students_list|safe }}-->

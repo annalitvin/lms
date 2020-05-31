@@ -1,18 +1,20 @@
 
-<h3>Students</h3>
+<h3>Students <a href="{% url 'student:add' %}" class="btn btn-info">ADD</a></h3>
 
 {% if students_list %}
-    <table border="1px">
-        <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Email</th>
-          <th>Group</th>
-          <th>Course</th>
-          <th>&#9998;</th>
-          <th>🗑</th>
-        </tr>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+              <th>Group</th>
+              <th>Course</th>
+              <th>&#9998;</th>
+              <th>🗑</th>
+            </tr>
+        </thead>
         {% for student in students_list %}
             <tr>
               <td> {{ student.id }}</td>
@@ -21,8 +23,8 @@
               <td> {{ student.email }}</td>
               <td> {{ student.group.name }}</td>
               <td> {{ student.group.course_name }}</td>
-              <td> <a href="{% url 'student:edit' student.id %}">EDIT</a></td>
-              <td> <a href="{% url 'student:delete' student.id %}">DEL</a></td>
+              <td> <a href="{% url 'student:edit' student.id %}" class="btn btn-primary">EDIT</a></td>
+              <td> <a href="{% url 'student:delete' student.id %}" class="btn btn-danger">DEL</a></td>
             </tr>
         {% endfor %}
     </table>

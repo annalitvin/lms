@@ -1,14 +1,19 @@
 {% extends 'teacher/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+
     <form method="post">
-        {% csrf_token %}
+        <div class="form-group">
+            {% csrf_token %}
 
-        {{ form.as_p }}
+            {{ form|crispy }}
 
-        <button type="submit">Save</button>
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
     </form>
-
+    <br>
+     <br>
     {% include 'group/includes/group_table.html' with groups_list=teacher.group_set.all%}
 {% endblock %}

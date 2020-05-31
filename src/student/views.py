@@ -1,115 +1,131 @@
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import redirect
 
 # Create your views here.
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, UpdateView, CreateView, DeleteView, TemplateView
 
 from student.forms import StudentAddForm, StudentEditForm
 from .models import Student
 
 
-def index(request):
-    return HttpResponse("Generate students in database using url: <strong> generate?student_number=1 </strong> <br>"
-                        + "where <strong>student_number</strong> is number of students. <br>Default: 100 students",
-                        status=200)
+class IndexView(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("Generate students in database using url: <strong> generate?student_number=1 </strong> <br>"
+                            + "where <strong>student_number</strong> is number of students. <br>Default: 100 students",
+                            status=200)
 
 
-def gen_student(request):
+class GenerateStudentsView(TemplateView):
 
-    STUDENT_NUMBER = 100
+    def gen_student(self, request):
 
-    student_number = str(request.GET.get('student_number', STUDENT_NUMBER))
-    if student_number.isdigit():
-        try:
-            for _ in range(int(student_number)):
-                Student.generate_student()
-        except Exception as ex:
-            return HttpResponse(f'Data added fail! {ex}', status=500)
-        return redirect('student:data_success')
-    return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
+        STUDENT_NUMBER = 100
 
+        student_number = str(request.GET.get('student_number', STUDENT_NUMBER))
+        if student_number.isdigit():
+            try:
+                for _ in range(int(student_number)):
+                    Student.generate_student()
+            except Exception as ex:
+                return HttpResponse(f'Data added fail! {ex}', status=500)
+            return redirect('student:data_success')
+        return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
 
-def data_success(request):
-    return HttpResponse("Data added successfully! <br> <a href='/student'>Main</a>", status=200)
-
-
-def students_list_one(request):
-    qs = Student.objects.all().select_related('group')
-
-    if request.GET.get('fname'):
-        qs = qs.filter(first_name=request.GET.get('fname'))
-    if request.GET.get('lname'):
-        qs = qs.filter(last_name=request.GET.get('lname'))
-    if request.GET.get('mail'):
-        qs = qs.filter(email=request.GET.get('mail'))
-
-    return render(request, 'student/students_list_one.html',
-                  {'students_list': qs, 'title': 'Student list 1'})
+    def get(self, request, *args, **kwargs):
+        return self.gen_student(request)
 
 
-def students_list_two(request):
-    qs = Student.objects.all()
+class DataSuccessView(TemplateView):
 
-    first_name, last_name, email = request.GET.get("fname"), request.GET.get("lname"), request.GET.get("mail")
-
-    if first_name or last_name or email:
-        qs = qs.filter(Q(first_name=first_name) |
-                       Q(last_name=last_name) |
-                       Q(email=email)).select_related('group')
-
-    result = '<br>'.join(str(student) for student in qs)
-    return render(request, 'student/students_list_two.html',
-                  {'students_list': result, 'title': 'Student list 2'})
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("Data added successfully! <br> <a href='/student'>Main</a>", status=200)
 
 
-def students_add(request):
+class StudentsListViewOne(ListView):
+    model = Student
+    template_name = 'student/students_list_one.html'
+    context_object_name = 'students_list'
 
-    students_add_template = 'student/students_add.html'
+    def get_queryset(self):
+        request = self.request
+        qs = super().get_queryset()
+        qs = qs.select_related('group').order_by('-id')
 
-    if request.method == 'POST':
-        form = StudentAddForm(request.POST)
-        if form.is_valid():
-            phone_number = form.cleaned_data.get('phone_number').strip()
-            email = form.cleaned_data.get('email').strip()
+        if request.GET.get('fname'):
+            qs = qs.filter(first_name=request.GET.get('fname'))
+        if request.GET.get('lname'):
+            qs = qs.filter(last_name=request.GET.get('lname'))
+        if request.GET.get('mail'):
+            qs = qs.filter(email=request.GET.get('mail'))
 
-            is_student_exists = Student.objects.filter(Q(phone_number=phone_number) |
-                                                       Q(email=email)).exists()
-            if is_student_exists:
-                error_massage = "Student not added. Student with such phone_number and email is exists! Try again:"
-                return render(request, students_add_template, {'form': form, "error_massage": error_massage},
-                              status=400)
-            form.save()
-            return HttpResponseRedirect(reverse('student:list_one'))
-    else:
-        form = StudentAddForm()
+        return qs
 
-    return render(request, students_add_template,
-                  {'form': form, 'title': 'Add student'})
-
-
-def student_edit(request, id):
-
-    students_edit_template = 'student/students_edit.html'
-    try:
-        student = Student.objects.get(id=id)
-    except Student.DoesNotExist:
-        return HttpResponseNotFound(f"Student with id={id} doesn't exist")
-
-    if request.method == 'POST':
-        form = StudentEditForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('student:list_one'))
-    else:
-        form = StudentEditForm(instance=student)
-
-    return render(request, students_edit_template,
-                  {'form': form, 'title': 'Edit student'})
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context['title'] = 'Student list 1'
+        return context
 
 
-def student_delete(request, id):
+class StudentsListViewTwo(ListView):
+    model = Student
+    template_name = 'student/students_list_two.html'
+    context_object_name = 'students_list'
 
-    student = get_object_or_404(Student, id=id)
-    student.delete()
-    return HttpResponseRedirect(reverse('student:list_one'))
+    def get_queryset(self):
+        request = self.request
+        qs = super().get_queryset()
+        qs = qs.select_related('group').order_by('-id')
+
+        first_name, last_name, email = request.GET.get("fname"), request.GET.get("lname"), request.GET.get("mail")
+
+        if first_name or last_name or email:
+            qs = qs.filter(Q(first_name=first_name) |
+                           Q(last_name=last_name) |
+                           Q(email=email))
+
+        result = '<br>'.join(str(student) for student in qs)
+        return result
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context['title'] = 'Student list 2'
+        return context
+
+
+class StudentUpdateView(UpdateView):
+    model = Student
+    template_name = 'student/students_edit.html'
+    form_class = StudentEditForm
+
+    def get_success_url(self):
+        return reverse('student:list_one')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edit student'
+        return context
+
+
+class StudentCreateView(CreateView):
+    model = Student
+    template_name = 'student/students_add.html'
+    form_class = StudentAddForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add student'
+        return context
+
+    def get_success_url(self):
+        return reverse('student:list_one')
+
+
+class StudentDeleteView(DeleteView):
+    model = Student
+    success_url = reverse_lazy('student:list_one')
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)

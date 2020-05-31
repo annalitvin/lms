@@ -1,19 +1,21 @@
 
-<h3>Groups</h3>
+<h3>Groups <a href="{% url 'group:add' %}" class="btn btn-info">ADD</a></h3>
 
 {% if groups_list %}
-    <table border="1px">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Specialty</th>
-          <th>Course name</th>
-          <th>Number persons</th>
-          <th>Type</th>
-          <th>Date start</th>
-            <th>&#9998;</th>
-            <th>🗑</th>
-        </tr>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Specialty</th>
+              <th>Course name</th>
+              <th>Number persons</th>
+              <th>Type</th>
+              <th>Date start</th>
+                <th>&#9998;</th>
+                <th>🗑</th>
+            </tr>
+        </thead>
         {% for group in groups_list  %}
             <tr>
               <td>{{ group.id }}</td>
@@ -23,8 +25,8 @@
               <td>{{ group.number_persons }}</td>
               <td>{{ group.type }}</td>
               <td>{{ group.date_start }}</td>
-              <td> <a href="{% url 'group:edit' group.id %}">EDIT</a></td>
-              <td> <a href="{% url 'group:delete' group.id %}">DEL</a></td>
+              <td> <a href="{% url 'group:edit' group.id %}" class="btn btn-primary">EDIT</a></td>
+              <td> <a href="{% url 'group:delete' group.id %}" class="btn btn-danger">DEL</a></td>
             </tr>
         {% endfor %}
     </table>

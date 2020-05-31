@@ -2,5 +2,8 @@
 {% load static %}
 
 {% block content %}
-    <p>{{ group }}</p>
+    <h5> Group name - {{ group.name }}</h5>
+    <br>
+    {% include 'group/includes/single_group.html' %}
+
 {% endblock %}

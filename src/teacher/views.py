@@ -1,113 +1,125 @@
-from django.db.models import Q
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
-
+from django.http import HttpResponse, Http404
+from django.shortcuts import redirect
 # Create your views here.
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView, DetailView
 
 from teacher.forms import TeacherAddForm, TeacherEditForm
 from .models import Teacher
 
 
-def index(request):
+class IndexTeacherDetailView(DetailView):
+    model = Teacher
+    template_name = 'teacher/index.html'
+    context_object_name = 'teacher'
 
-    id_teacher = request.GET.get('id')
-    if id_teacher is not None:
-        if not id_teacher.isdigit():
-            return HttpResponse("'id' must be numeric and greatest when zero")
+    def get_object(self, queryset=None):
 
-        id_teacher = int(id_teacher)
-        if id_teacher == 0:
-            return HttpResponse("'id' must be greatest when zero")
-
+        id_teacher = self.kwargs.get(self.pk_url_kwarg)
+        print(id_teacher, "erwr")
         try:
-            teacher = Teacher.objects.get(pk=id_teacher)
-        except Teacher.DoesNotExist:
-            return HttpResponse("Generate teachers in database using url: <strong>generate?teach_number=1</strong>" +
-                                "<br>" +
-                                "where <strong>teach_number</strong> is number of teachers. <br>Default: 100 teachers",
-                                status=200)
-        return render(request, "teacher/index.html", context={"teacher": teacher})
-    return HttpResponse("Введите параметр id: ?id=n")
+            group_obj = self.model.objects.get(pk=id_teacher)
+        except self.model.DoesNotExist:
+            raise Http404("Group does not exist! "
+                          "Generate teachers in database using url: generate?teach_number=1" +
+                          "where teach_number is number of teachers. Default: 100 teachers")
+        return group_obj
+
+    def get(self, request, *args, **kwargs):
+
+        id_teacher = self.kwargs.get(self.pk_url_kwarg)
+
+        if id_teacher is not None:
+            if id_teacher == 0:
+                return HttpResponse("'id' must be greatest when zero")
+
+        return super().get(request, *args, **kwargs)
 
 
-def gen_teacher(request):
+class GenerateTeacherView(TemplateView):
 
-    TEACHER_NUMBER = 100
+    def gen_teacher(self, request):
 
-    teacher_number = str(request.GET.get('teach_number', TEACHER_NUMBER))
-    if teacher_number.isdigit():
-        try:
-            for _ in range(int(teacher_number)):
-                Teacher.generate_teacher()
-        except Exception as ex:
-            return HttpResponse(f'Data added fail! {ex}', status=500)
-        return redirect('teacher:data_success')
-    return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
+        TEACHER_NUMBER = 100
 
+        teacher_number = str(request.GET.get('teach_number', TEACHER_NUMBER))
+        if teacher_number.isdigit():
+            try:
+                for _ in range(int(teacher_number)):
+                    Teacher.generate_teacher()
+            except Exception as ex:
+                return HttpResponse(f'Data added fail! {ex}', status=500)
+            return redirect('teacher:data_success')
+        return HttpResponse("Error. The value must be numeric and greater than zero.", status=400)
 
-def data_success(request):
-    return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
-
-
-def teachers_list(request):
-    qs = Teacher.objects.all()
-
-    if request.GET.get('fname'):
-        qs = qs.filter(first_name=request.GET.get('fname'))
-    if request.GET.get('lname'):
-        qs = qs.filter(last_name=request.GET.get('lname'))
-    if request.GET.get('mail'):
-        qs = qs.filter(email=request.GET.get('mail'))
-
-    return render(request, 'teacher/teachers_list.html', {'teachers_list': qs})
+    def get(self, request, *args, **kwargs):
+        return self.gen_teacher(request)
 
 
-def add_teacher(request):
+class DataSuccessView(TemplateView):
 
-    add_teacher_template = 'teacher/add_teacher.html'
-
-    if request.method == 'POST':
-        form = TeacherAddForm(request.POST)
-        if form.is_valid():
-            phone_number = form.cleaned_data.get('phone_number').strip()
-            email = form.cleaned_data.get('email').strip()
-
-            is_teacher_exists = Teacher.objects.filter(Q(phone_number=phone_number) |
-                                                       Q(email=email)).exists()
-            if is_teacher_exists:
-                error_massage = "Teacher not added. Teacher with such phone_number and email is exists! Try again:"
-                return render(request, add_teacher_template, {'form': form, "error_massage": error_massage},
-                              status=400)
-
-            form.save()
-            return HttpResponseRedirect(reverse('teacher:list'))
-    else:
-        form = TeacherAddForm()
-    return render(request, add_teacher_template, {'form': form})
+    def get(self, request, *args, **kwargs):
+        return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
 
 
-def edit_teacher(request, id):
+class TeachersListView(ListView):
+    model = Teacher
+    template_name = 'teacher/teachers_list.html'
+    context_object_name = 'teachers_list'
 
-    teachers_edit_template = 'teacher/edit_teacher.html'
-    try:
-        teacher = Teacher.objects.get(id=id)
-    except Teacher.DoesNotExist:
-        return HttpResponseNotFound(f"Teacher with id={id} doesn't exist")
+    def get_queryset(self):
+        request = self.request
+        qs = super().get_queryset()
+        qs = qs.order_by('-id')
 
-    if request.method == 'POST':
-        form = TeacherEditForm(request.POST or None, instance=teacher)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('teacher:list'))
-    else:
-        form = TeacherEditForm(instance=teacher)
-    return render(request, teachers_edit_template,
-                  {'form': form, 'title': 'Edit teacher', 'teacher': teacher})
+        if request.GET.get('fname'):
+            qs = qs.filter(first_name=request.GET.get('fname'))
+        if request.GET.get('lname'):
+            qs = qs.filter(last_name=request.GET.get('lname'))
+        if request.GET.get('mail'):
+            qs = qs.filter(email=request.GET.get('mail'))
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Teacher list'
+        return context
 
 
-def delete_teacher(request, id):
+class TeacherUpdateView(UpdateView):
+    model = Teacher
+    template_name = 'teacher/edit_teacher.html'
+    form_class = TeacherEditForm
 
-    teacher = get_object_or_404(Teacher, id=id)
-    teacher.delete()
-    return HttpResponseRedirect(reverse('teacher:list'))
+    def get_success_url(self):
+        return reverse('teacher:list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edit teacher'
+        if self.object:
+            context['teacher'] = self.object
+        return context
+
+
+class TeacherCreateView(CreateView):
+    model = Teacher
+    template_name = 'teacher/add_teacher.html'
+    form_class = TeacherAddForm
+
+    def get_success_url(self):
+        return reverse('teacher:list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add teacher'
+        return context
+
+
+class TeacherDeleteView(DeleteView):
+    model = Teacher
+    success_url = reverse_lazy('teacher:list')
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)

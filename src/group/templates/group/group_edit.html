@@ -1,14 +1,17 @@
 {% extends 'group/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
+
     <form method="post">
         {% csrf_token %}
 
-        {{ form.as_p }}
+        {{ form|crispy }}
 
-        <button type="submit">Save</button>
+        <button type="submit" class="btn btn-success">Save</button>
     </form>
-
+    <br>
+     <br>
     {% include 'student/includes/students_table.html' with students_list=group.students.all %}
 {% endblock %}
