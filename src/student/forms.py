@@ -28,15 +28,13 @@ class StudentAddForm(StudentBaseForm):
 
 class StudentEditForm(StudentBaseForm):
 
-    def __init__(self, *args, **kwargs):
-        self.pk = kwargs.get('instance', None).pk
-        super().__init__(*args, **kwargs)
-
     def clean_email(self):
         cleaned_data = super().clean()
         email = cleaned_data.get('email').strip()
 
-        is_email_exists = Student.objects.filter(email=email).exclude(pk=self.pk).exists()
+        student_pk = self.instance.pk
+
+        is_email_exists = Student.objects.filter(email=email).exclude(pk=student_pk).exists()
 
         if is_email_exists:
             error_massage = "Student not added. Student with such email is exists! Try again:"
