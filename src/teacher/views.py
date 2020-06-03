@@ -4,11 +4,12 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView, DetailView
 
+from app.mixins import CustomLoginRequiredMixin
 from teacher.forms import TeacherAddForm, TeacherEditForm
 from .models import Teacher
 
 
-class IndexTeacherDetailView(DetailView):
+class IndexTeacherDetailView(CustomLoginRequiredMixin, DetailView):
     model = Teacher
     template_name = 'teacher/index.html'
     context_object_name = 'teacher'
@@ -36,7 +37,7 @@ class IndexTeacherDetailView(DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class GenerateTeacherView(TemplateView):
+class GenerateTeacherView(CustomLoginRequiredMixin, TemplateView):
 
     def gen_teacher(self, request):
 
@@ -62,10 +63,12 @@ class DataSuccessView(TemplateView):
         return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
 
 
-class TeachersListView(ListView):
+class TeachersListView(CustomLoginRequiredMixin, ListView):
     model = Teacher
     template_name = 'teacher/teachers_list.html'
     context_object_name = 'teachers_list'
+
+    paginate_by = 10
 
     def get_queryset(self):
         request = self.request
@@ -87,7 +90,7 @@ class TeachersListView(ListView):
         return context
 
 
-class TeacherUpdateView(UpdateView):
+class TeacherUpdateView(CustomLoginRequiredMixin, UpdateView):
     model = Teacher
     template_name = 'teacher/edit_teacher.html'
     form_class = TeacherEditForm
@@ -103,7 +106,7 @@ class TeacherUpdateView(UpdateView):
         return context
 
 
-class TeacherCreateView(CreateView):
+class TeacherCreateView(CustomLoginRequiredMixin, CreateView):
     model = Teacher
     template_name = 'teacher/add_teacher.html'
     form_class = TeacherAddForm
@@ -117,7 +120,7 @@ class TeacherCreateView(CreateView):
         return context
 
 
-class TeacherDeleteView(DeleteView):
+class TeacherDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Teacher
     success_url = reverse_lazy('teacher:list')
 
