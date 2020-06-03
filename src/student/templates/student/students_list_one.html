@@ -5,26 +5,50 @@
 
     <form>
         <div class="input-group mb-3">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">First name</span>
-        </div>
-        <input name="fname" type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">First name</span>
+            </div>
+            <input name="fname" type="text" class="form-control" placeholder="First name" aria-label="firstname" aria-describedby="basic-addon1">
 
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon2">Last name</span>
-        </div>
-        <input name="lname" type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">Last name</span>
+            </div>
+            <input name="lname" type="text" class="form-control" placeholder="Last name" aria-label="lastname" aria-describedby="basic-addon1">
 
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon3">Email</span>
-        </div>
-        <input name="mail" type="text" class="form-control" placeholder="Email" aria-label="email" aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Email</span>
+            </div>
+            <input name="mail" type="text" class="form-control" placeholder="Email" aria-label="email" aria-describedby="basic-addon1">
 
-        <button type="submit" class="btn btn-success">Search</button>
-    </div>
+            <button type="submit" class="btn btn-success">Search</button>
+        </div>
     </form>
 
-<!--    {{ students_list|safe }}-->
+    <!--    {{ students_list|safe }}-->
     {% include 'student/includes/students_table.html' %}
+    {% include 'student/includes/pagination.html' %}
+
+<!--    <span class="step-links">
+        <nav aria-label="Page navigation example" style="width: 100%">
+        <ul class="pagination" style="width: 100%">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a href="?page=1" class="page-link">&laquo; first</a></li>
+                <li class="page-item"><a href="?page={{ page_obj.previous_page_number }}" class="page-link">previous</a></li>
+            {% endif %}
+            {% for number_page in page_obj.paginator.page_range %}
+                <li class="page-item"><a href="?page={{ number_page }}" class="page-link">{{ number_page }} </a></li>
+
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">next</a></li>
+                <li class="page-item"><a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">last &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    </span>-->
+
+
+
 
 {% endblock %}
