@@ -1,8 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
 from group.models import Group
-from teacher.models import Teacher
 
 
 class GroupBaseForm(ModelForm):

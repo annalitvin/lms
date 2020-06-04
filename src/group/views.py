@@ -5,11 +5,12 @@ from django.http import HttpResponse, Http404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, DetailView
 
+from app.mixins import CustomLoginRequiredMixin
 from group.forms import GroupAddForm, GroupEditForm
 from .models import Group
 
 
-class IndexGroupDetailView(DetailView):
+class IndexGroupDetailView(CustomLoginRequiredMixin, DetailView):
     model = Group
     template_name = 'group/index.html'
     context_object_name = 'group'
@@ -38,10 +39,12 @@ class IndexGroupDetailView(DetailView):
         return context
 
 
-class GroupListView(ListView):
+class GroupListView(CustomLoginRequiredMixin, ListView):
     model = Group
     template_name = 'group/groups_list.html'
     context_object_name = 'groups_list'
+
+    paginate_by = 10
 
     def get_queryset(self):
         request = self.request
@@ -70,7 +73,7 @@ class GroupListView(ListView):
         return context
 
 
-class GroupUpdateView(UpdateView):
+class GroupUpdateView(CustomLoginRequiredMixin, UpdateView):
     model = Group
     template_name = 'group/group_edit.html'
     form_class = GroupEditForm
@@ -86,7 +89,7 @@ class GroupUpdateView(UpdateView):
         return context
 
 
-class GroupCreateView(CreateView):
+class GroupCreateView(CustomLoginRequiredMixin, CreateView):
     model = Group
     template_name = 'group/add_group.html'
     form_class = GroupAddForm
@@ -100,7 +103,7 @@ class GroupCreateView(CreateView):
         return context
 
 
-class GroupDeleteView(DeleteView):
+class GroupDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Group
     success_url = reverse_lazy('group:groups_list')
 

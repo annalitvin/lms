@@ -1,11 +1,11 @@
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect
-
 # Create your views here.
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, TemplateView
 
+from app.mixins import CustomLoginRequiredMixin
 from student.forms import StudentAddForm, StudentEditForm
 from .models import Student
 
@@ -44,10 +44,12 @@ class DataSuccessView(TemplateView):
         return HttpResponse("Data added successfully! <br> <a href='/student'>Main</a>", status=200)
 
 
-class StudentsListViewOne(ListView):
+class StudentsListViewOne(CustomLoginRequiredMixin, ListView):
     model = Student
     template_name = 'student/students_list_one.html'
     context_object_name = 'students_list'
+
+    paginate_by = 10
 
     def get_queryset(self):
         request = self.request
@@ -69,10 +71,12 @@ class StudentsListViewOne(ListView):
         return context
 
 
-class StudentsListViewTwo(ListView):
+class StudentsListViewTwo(CustomLoginRequiredMixin, ListView):
     model = Student
     template_name = 'student/students_list_two.html'
     context_object_name = 'students_list'
+
+    paginate_by = 10
 
     def get_queryset(self):
         request = self.request
@@ -85,9 +89,7 @@ class StudentsListViewTwo(ListView):
             qs = qs.filter(Q(first_name=first_name) |
                            Q(last_name=last_name) |
                            Q(email=email))
-
-        result = '<br>'.join(str(student) for student in qs)
-        return result
+        return qs
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
@@ -95,7 +97,7 @@ class StudentsListViewTwo(ListView):
         return context
 
 
-class StudentUpdateView(UpdateView):
+class StudentUpdateView(CustomLoginRequiredMixin, UpdateView):
     model = Student
     template_name = 'student/students_edit.html'
     form_class = StudentEditForm
@@ -109,7 +111,7 @@ class StudentUpdateView(UpdateView):
         return context
 
 
-class StudentCreateView(CreateView):
+class StudentCreateView(CustomLoginRequiredMixin, CreateView):
     model = Student
     template_name = 'student/students_add.html'
     form_class = StudentAddForm
@@ -123,7 +125,7 @@ class StudentCreateView(CreateView):
         return reverse('student:list_one')
 
 
-class StudentDeleteView(DeleteView):
+class StudentDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Student
     success_url = reverse_lazy('student:list_one')
 
