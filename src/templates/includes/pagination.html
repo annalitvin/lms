@@ -7,7 +7,9 @@
         {% endif %}
 
         {% for number_page in page_obj.paginator.page_range %}
-            <a href="?page={{ number_page }}" class="page-link" style="display: inline-block">{{ number_page }} </a>
+            {% if number_page >= page_obj.number|add:-8 and number_page < page_obj.number|add:8 %}
+                <a href="?page={{ number_page }}" class="page-link" style="display: inline-block">{{ number_page }} </a>
+            {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
