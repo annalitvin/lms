@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.http import HttpResponse, Http404
 
@@ -73,10 +75,12 @@ class GroupListView(CustomLoginRequiredMixin, ListView):
         return context
 
 
-class GroupUpdateView(CustomLoginRequiredMixin, UpdateView):
+class GroupUpdateView(SuccessMessageMixin, CustomLoginRequiredMixin, UpdateView):
     model = Group
     template_name = 'group/group_edit.html'
     form_class = GroupEditForm
+
+    success_message = 'Group has been updated!'
 
     def get_success_url(self):
         return reverse('group:groups_list')
@@ -106,6 +110,10 @@ class GroupCreateView(CustomLoginRequiredMixin, CreateView):
 class GroupDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Group
     success_url = reverse_lazy('group:groups_list')
+
+    def post(self, *args, **kwargs):
+        messages.success(self.request, f'Group deleted!')
+        return super().post(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
