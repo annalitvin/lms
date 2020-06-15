@@ -109,11 +109,10 @@ class GroupCreateView(CustomLoginRequiredMixin, CreateView):
 
 class GroupDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Group
-    success_url = reverse_lazy('group:groups_list')
-
-    def post(self, *args, **kwargs):
-        messages.success(self.request, f'Group deleted!')
-        return super().post(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, f'Group deleted!')
+        return reverse('group:groups_list')

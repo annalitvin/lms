@@ -135,11 +135,10 @@ class StudentCreateView(CustomLoginRequiredMixin, CreateView):
 
 class StudentDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Student
-    success_url = reverse_lazy('student:list_one')
-
-    def post(self, *args, **kwargs):
-        messages.success(self.request, f'Student deleted!')
-        return super().post(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, f'Student deleted!')
+        return reverse('student:list_one')
