@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
+
     'debug_toolbar',
+    'django_extensions',
     'crispy_forms',
+
     'student',
     'teacher',
     'group',
@@ -130,6 +132,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 
 LOGGING = {
     'version': 1,
@@ -157,8 +163,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = '/'
 
 MEDIA_URL = '/media/'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
