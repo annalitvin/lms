@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 # Create your views here.
@@ -60,7 +62,7 @@ class GenerateTeacherView(CustomLoginRequiredMixin, TemplateView):
 class DataSuccessView(TemplateView):
 
     def get(self, request, *args, **kwargs):
-        return HttpResponse("Data added successfully! <br> <a href='/teacher'>На главную</a>", status=200)
+        return HttpResponse("Data added successfully! <br> <a href='/'>На главную</a>", status=200)
 
 
 class TeachersListView(CustomLoginRequiredMixin, ListView):
@@ -90,10 +92,12 @@ class TeachersListView(CustomLoginRequiredMixin, ListView):
         return context
 
 
-class TeacherUpdateView(CustomLoginRequiredMixin, UpdateView):
+class TeacherUpdateView(SuccessMessageMixin, CustomLoginRequiredMixin, UpdateView):
     model = Teacher
     template_name = 'teacher/edit_teacher.html'
     form_class = TeacherEditForm
+
+    success_message = "Teacher has been updated"
 
     def get_success_url(self):
         return reverse('teacher:list')
@@ -122,7 +126,10 @@ class TeacherCreateView(CustomLoginRequiredMixin, CreateView):
 
 class TeacherDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Teacher
-    success_url = reverse_lazy('teacher:list')
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, f'Teacher deleted!')
+        return reverse('teacher:list')

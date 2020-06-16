@@ -1,8 +1,11 @@
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse, reverse_lazy
+from django.utils.http import urlencode
 from django.views.generic import ListView, UpdateView, CreateView, DeleteView, TemplateView
 
 from app.mixins import CustomLoginRequiredMixin
@@ -67,7 +70,10 @@ class StudentsListViewOne(CustomLoginRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
+        param = self.request.GET
+
         context['title'] = 'Student list 1'
+        context['query_params'] = urlencode({k: v for k, v in param.items() if k != 'page'})
         return context
 
 
@@ -97,10 +103,12 @@ class StudentsListViewTwo(CustomLoginRequiredMixin, ListView):
         return context
 
 
-class StudentUpdateView(CustomLoginRequiredMixin, UpdateView):
+class StudentUpdateView(SuccessMessageMixin, CustomLoginRequiredMixin, UpdateView):
     model = Student
     template_name = 'student/students_edit.html'
     form_class = StudentEditForm
+
+    success_message = "Student has been updated!"
 
     def get_success_url(self):
         return reverse('student:list_one')
@@ -127,7 +135,10 @@ class StudentCreateView(CustomLoginRequiredMixin, CreateView):
 
 class StudentDeleteView(CustomLoginRequiredMixin, DeleteView):
     model = Student
-    success_url = reverse_lazy('student:list_one')
 
     def get(self, *args, **kwargs):
         return self.post(*args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, f'Student deleted!')
+        return reverse('student:list_one')

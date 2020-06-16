@@ -8,9 +8,6 @@ class GroupBaseForm(ModelForm):
         model = Group
         fields = '__all__'
 
-
-class GroupAddForm(GroupBaseForm):
-
     def clean(self):
         cleaned_data = super().clean()
 
@@ -31,6 +28,10 @@ class GroupAddForm(GroupBaseForm):
             error_message = "Such specialty does not exist"
             self.add_error('specialty', error_message)
         return self.cleaned_data
+
+
+class GroupAddForm(GroupBaseForm):
+    pass
 
 
 class GroupEditForm(GroupBaseForm):

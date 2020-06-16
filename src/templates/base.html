@@ -37,6 +37,9 @@
 
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <img class="rounded-circle p-1 m-1" width="45" height="45"  src="{{ user.profile.image.url }}">
+                    </li>
                     <li class="nav-item active">
                         <a class="nav-link" href="{% url 'account:profile' %}">Profile ({{user.username}})</a>
                     </li>
@@ -58,6 +61,10 @@
 <!--            </form>-->
         </div>
     </nav>
+
+    <div class="p-3">
+        {% include 'includes/messages.html' %}
+    </div>
     <h2 class="p-4">{{ title }}</h2>
     <p></p>
     <p></p>
