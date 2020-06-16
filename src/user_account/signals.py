@@ -10,5 +10,6 @@ def save_profile(sender, instance, created, **kwargs):
     if created:
         UserAccountProfile.objects.create(user=instance)
     # else:
+          #получается ошибка уникальности
     #     profile = getattr(instance, 'profile', UserAccountProfile.objects.create(user=instance))
     #     profile.save()
