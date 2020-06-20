@@ -1,7 +1,7 @@
 import copy
 import time
 
-from django.utils.http import urlencode
+from urllib.parse import urlencode
 
 
 class LoggingRequestTime:
