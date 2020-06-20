@@ -59,7 +59,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'app.middleware.LoggingRequestTime'
+
+    'app.middleware.LoggingRequestTime',
+    'app.middleware.QueryParamsInjectorMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'

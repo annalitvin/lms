@@ -4,6 +4,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 # Create your views here.
 from django.urls import reverse, reverse_lazy
+from django.utils.http import urlencode
 from django.views.generic import TemplateView, ListView, UpdateView, CreateView, DeleteView, DetailView
 
 from app.mixins import CustomLoginRequiredMixin
@@ -19,7 +20,6 @@ class IndexTeacherDetailView(CustomLoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
 
         id_teacher = self.kwargs.get(self.pk_url_kwarg)
-        print(id_teacher, "erwr")
         try:
             group_obj = self.model.objects.get(pk=id_teacher)
         except self.model.DoesNotExist:
@@ -78,6 +78,7 @@ class TeachersListView(CustomLoginRequiredMixin, ListView):
         qs = qs.order_by('-id')
 
         if request.GET.get('fname'):
+            print(request.GET.get('fname'))
             qs = qs.filter(first_name=request.GET.get('fname'))
         if request.GET.get('lname'):
             qs = qs.filter(last_name=request.GET.get('lname'))
