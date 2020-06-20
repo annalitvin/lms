@@ -70,7 +70,7 @@ class TeachersListView(CustomLoginRequiredMixin, ListView):
     template_name = 'teacher/teachers_list.html'
     context_object_name = 'teachers_list'
 
-    paginate_by = 1
+    paginate_by = 10
 
     def get_queryset(self):
         request = self.request
@@ -78,6 +78,7 @@ class TeachersListView(CustomLoginRequiredMixin, ListView):
         qs = qs.order_by('-id')
 
         if request.GET.get('fname'):
+            print(request.GET.get('fname'))
             qs = qs.filter(first_name=request.GET.get('fname'))
         if request.GET.get('lname'):
             qs = qs.filter(last_name=request.GET.get('lname'))
@@ -88,11 +89,7 @@ class TeachersListView(CustomLoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        #param = self.request.GET
         context['title'] = 'Teacher list'
-
-        #context['query_params'] = urlencode({k: v for k, v in param.items() if k != 'page'})
         return context
 
 
