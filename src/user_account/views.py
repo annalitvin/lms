@@ -38,11 +38,10 @@ class UserAccountLogoutView(LogoutView):
 
 @login_required
 def user_account_update_profile(request):
-
     if request.method == 'POST':
         u_form = UserAccountProfileForm(request.POST, instance=request.user)
         p_form = UserProfileUpdateForm(request.POST, request.FILES,
-                                           instance=request.user.profile)
+                                       instance=request.user.profile)
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
